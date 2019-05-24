@@ -22,3 +22,17 @@ public static Connection getConnection() throws SQLException {
 ```
 
 It is important to note that the content of the program is constructed in Turkish language. Jar extension of the whole program will be uploaded soon.
+
+*Some of the screenshots from the program:*
+
+![Login Screen](https://raw.githubusercontent.com/nihadguluzade/marketsystem/branch/images/marketss1.png)
+Login Screen
+
+![Main Screen](https://raw.githubusercontent.com/nihadguluzade/marketsystem/branch/images/marketss5.png)
+Main Shop Screen
+
+![Basket Screen](https://raw.githubusercontent.com/nihadguluzade/marketsystem/branch/images/marketss3.png)
+Basket View
+
+![Order Screen](https://raw.githubusercontent.com/nihadguluzade/marketsystem/branch/images/marketss4.png)
+Order Page
