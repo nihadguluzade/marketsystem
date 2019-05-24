@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:controller="app.controller.OrderSuccessFailController" fx:id="orderStage" prefHeight="440.0" prefWidth="764.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="200.0" layoutX="81.0" layoutY="130.0" pickOnBounds="true" preserveRatio="true">
+              <image>
+                  <Image url="@/app/resources/success.png" />
+              </image>
+      </ImageView>
+      <Label alignment="CENTER" layoutX="278.0" layoutY="130.0" prefHeight="42.0" prefWidth="401.0" text="Siparişiniz gönderildi!" textAlignment="CENTER" textFill="#ff9500">
+         <font>
+            <Font name="SF UI Display Bold" size="34.0" />
+         </font>
+      </Label>
+      <Label alignment="TOP_LEFT" layoutX="278.0" layoutY="189.0" prefHeight="87.0" prefWidth="401.0" text="Siparişiniz başarılı şekilde gönderildi ve kısa bir sürede kargoya verilecek. O zamana kadar uygulamayı arkadaşlarınızla paylaşmayı unutmayınız. Bizimle alışveriş yaptığınız için teşekkür ederiz." textAlignment="CENTER" wrapText="true">
+         <font>
+            <Font name="SF UI Display Medium" size="16.0" />
+         </font></Label>
+      <Button fx:id="mainMenuButton" layoutX="432.0" layoutY="308.0" mnemonicParsing="false" text="Ana Sayfa">
+         <font>
+            <Font name="SF UI Display Medium" size="16.0" />
+         </font>
+      </Button>
+       <Label alignment="TOP_RIGHT" layoutX="276.0" layoutY="276.0" prefHeight="20.0" prefWidth="200.0" text="Sipariş Kodunuz:" textAlignment="CENTER" wrapText="true">
+           <font>
+               <Font name="SF UI Display Medium" size="16.0" />
+           </font>
+       </Label>
+       <Label fx:id="hashLabel" alignment="TOP_LEFT" layoutX="483.0" layoutY="277.0" prefHeight="20.0" prefWidth="200.0" text="3fb7f562cfc237c8" textAlignment="CENTER" wrapText="true">
+           <font>
+               <Font name="SF UI Display Medium" size="16.0" />
+           </font>
+       </Label>
+   </children>
+</AnchorPane>

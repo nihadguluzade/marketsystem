@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="orderStage" prefHeight="455.0" prefWidth="751.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controller.OrderSuccessFailController">
+    <children>
+        <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="200.0" layoutX="74.0" layoutY="153.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@/app/resources/fail.png" />
+         </image>
+        </ImageView>
+        <Label alignment="CENTER" layoutX="271.0" layoutY="153.0" prefHeight="42.0" prefWidth="401.0" text="Başarısız Sipariş..." textAlignment="CENTER" textFill="#ff0000e5">
+            <font>
+                <Font name="SF UI Display Bold" size="34.0" />
+            </font>
+        </Label>
+        <Label alignment="TOP_LEFT" layoutX="271.0" layoutY="212.0" prefHeight="66.0" prefWidth="401.0" text="Özür dileriz, siparişinizi gönderme anında bir hata oluşdu, lütfen daha sonra yeniden deneyiniz ve çıkış yapmanızı rica ederiz." textAlignment="CENTER" wrapText="true">
+            <font>
+                <Font name="SF UI Display Medium" size="16.0" />
+            </font></Label>
+        <Button fx:id="mainMenuButton" layoutX="425.0" layoutY="287.0" mnemonicParsing="false" text="Çıkış Yap">
+            <font>
+                <Font name="SF UI Display Medium" size="16.0" />
+            </font>
+        </Button>
+      <Label fx:id="hashLabel" layoutX="438.0" layoutY="319.0" text="hashLabel" visible="false" />
+    </children>
+</AnchorPane>

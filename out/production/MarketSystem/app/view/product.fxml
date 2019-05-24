@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.text.Font?>
+
+<?import javafx.scene.layout.HBox?>
+<AnchorPane fx:controller="app.controller.ShopController" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" maxHeight="280.0" maxWidth="190.0" prefHeight="280.0" prefWidth="190.0">
+    <TilePane.margin>
+        <Insets left="25.0" top="25.0" />
+    </TilePane.margin>
+    <children>
+        <ImageView fx:id="productImage" fitHeight="100.0" fitWidth="100.0" layoutX="45.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
+        <Label fx:id="productNameLabel" textOverrun="ELLIPSIS" wrapText="true" textAlignment="CENTER" alignment="CENTER" layoutX="5.0" layoutY="114.0" prefHeight="60.0" prefWidth="180.0" text="Hayvanlardan Tanrılara - Sapiens
+">
+            <font>
+                <Font name="SF UI Display Medium" size="16.0" />
+            </font>
+            <padding>
+                <Insets bottom="5.0" top="10.0" left="5.0" right="5.0" />
+            </padding>
+        </Label>
+        <Label fx:id="sellerLabel" alignment="CENTER" layoutX="25.0" layoutY="164.0" prefHeight="30.0" prefWidth="140.0" text="Satıcı Adı" textFill="#a9a9a9">
+            <font>
+                <Font name="SF UI Display Medium" size="13.0" />
+            </font>
+            <padding>
+                <Insets bottom="5.0" top="10.0" left="5.0" right="5.0" />
+            </padding>
+        </Label>
+        <Label fx:id="productPriceLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="26.0" layoutY="187.0" prefHeight="39.0" prefWidth="140.0" text="89,99 ₺" textAlignment="CENTER" textFill="#000">
+            <font>
+                <Font name="SF UI Display SemiBold" size="17.0" />
+            </font>
+            <padding>
+                <Insets bottom="10.0" top="10.0" />
+            </padding>
+        </Label>
+        <Button fx:id="addToBasketButton" onAction="#addToBasketHandler" layoutX="45.0" layoutY="241.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="100.0" text="Sebete Ekle">
+            <font>
+                <Font name="SF UI Display Medium" size="13.0" />
+            </font>
+        </Button>
+        <Button fx:id="deleteButton" onAction="#deleteProductHandler" layoutX="45.0" layoutY="241.0" visible="false" mnemonicParsing="false" prefHeight="26.0" prefWidth="100.0" text="Sil">
+            <font>
+                <Font name="SF UI Display Medium" size="13.0" />
+            </font>
+        </Button>
+
+        <!--Hidden Product Id Label-->
+        <Label fx:id="productIdLabel" visible="false" alignment="BOTTOM_RIGHT" text="#id">
+            <font>
+                <Font name="SF UI Display Medium" size="15.0" />
+            </font>
+        </Label>
+
+        <Label fx:id="tcLabel" visible="false" alignment="BOTTOM_RIGHT" text="#tc">
+            <font>
+                <Font name="SF UI Display Medium" size="15.0" />
+            </font>
+        </Label>
+
+        <Label fx:id="saleLabel" visible="false" alignment="CENTER" layoutX="25.0" layoutY="219.5" prefWidth="140.0" text="İndirimli" textFill="#ff7b00">
+            <font>
+                <Font name="SF UI Display Semibold" size="13.0" />
+            </font>
+        </Label>
+    </children>
+</AnchorPane>

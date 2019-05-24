@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="110.0" prefWidth="508.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controller.ViewBasketScreenController">
+    <children>
+        <ImageView fx:id="productImage" fitHeight="107.0" fitWidth="91.0" layoutX="14.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true" />
+        <Label fx:id="productNameLabel" layoutX="122.0" layoutY="21.0" prefHeight="40.0" prefWidth="230.0" text="Hayvanlardan Tanrılara Sapiens">
+            <font>
+                <Font name="SF UI Display Semibold" size="16.0" />
+            </font>
+        </Label>
+        <Label fx:id="productSellerLabel" layoutX="122.0" layoutY="61.0" text="Yuval Noah Harari" textFill="#000000ac">
+            <font>
+                <Font name="SF UI Display Medium" size="13.0" />
+            </font>
+        </Label>
+        <Label fx:id="productPriceLabel" alignment="CENTER_RIGHT" layoutX="366.0" layoutY="34.0" prefHeight="29.0" prefWidth="128.0" text="50,00 ₺" textAlignment="RIGHT">
+            <font>
+                <Font name="SF UI Display Bold" size="22.0" />
+            </font>
+        </Label>
+      <Label layoutX="423.0" layoutY="21.0" text="\% 40 İndirim" textFill="#ff7b00" visible="false">
+         <font>
+            <Font name="SF UI Display Bold" size="12.0" />
+         </font>
+      </Label>
+        <Button fx:id="removeButton" layoutX="454.0" layoutY="70.0" mnemonicParsing="false" onAction="#removeFromBasketHandler" prefHeight="26.0" prefWidth="40.0" text="Sil">
+         <font>
+            <Font name="SF UI Display Medium" size="13.0" />
+         </font></Button>
+      <Label fx:id="productHashLabel" layoutX="122.0" layoutY="83.0" text="hashLabel" visible="false" />
+      <Label fx:id="usernameLabel" layoutX="169.0" layoutY="83.0" text="usernameLabel" visible="false" />
+      <Label fx:id="idLabel" layoutX="169.0" layoutY="83.0" text="idLabel" visible="false" />
+    </children>
+</AnchorPane>
