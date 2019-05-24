@@ -25,14 +25,14 @@ It is important to note that the content of the program is constructed in Turkis
 
 *Some of the screenshots from the program:*
 
-![Login Screen](https://raw.githubusercontent.com/nihadguluzade/marketsystem/branch/images/marketss1.png)
+![Login Screen](https://raw.githubusercontent.com/nihadguluzade/marketsystem/master/images/marketss1.png)
 Login Screen
 
-![Main Screen](https://raw.githubusercontent.com/nihadguluzade/marketsystem/branch/images/marketss5.png)
+![Main Screen](https://raw.githubusercontent.com/nihadguluzade/marketsystem/master/images/marketss5.png)
 Main Shop Screen
 
-![Basket Screen](https://raw.githubusercontent.com/nihadguluzade/marketsystem/branch/images/marketss3.png)
+![Basket Screen](https://raw.githubusercontent.com/nihadguluzade/marketsystem/master/images/marketss3.png)
 Basket View
 
-![Order Screen](https://raw.githubusercontent.com/nihadguluzade/marketsystem/branch/images/marketss4.png)
+![Order Screen](https://raw.githubusercontent.com/nihadguluzade/marketsystem/master/images/marketss4.png)
 Order Page
