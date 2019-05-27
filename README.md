@@ -11,6 +11,7 @@ Market System (Alışveriş sistemi), desktop application coded in Java, using J
 
 All the information about **users**, **products**, **baskets**, **orders** are stored on the database.
 
+### Compile
 To manually compile the program make sure to include javafx library into the project and be sure to import the databases to your localhost. The connection link to database is:
 
 ```java
