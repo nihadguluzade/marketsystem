@@ -1,6 +1,6 @@
 # Market System
 
-Market System (Alışveriş sistemi), desktop application coded in Java, using JavaFX library and database to store information where various types of users can purchase and order different products from this application. Project consists of several modules, one of the important one is the type of users who "will" use this app. In the process of designing the project, it was decided to have 2 types of users: Moderators and Normal Users. Normal users (the person who are using the system) have the ability to choose from various products with the benefit of searching or viewing them by their category, whereas Moderators have the much more control over the program.
+Market System (Alışveriş sistemi), desktop application coded in Java, using JavaFX library and database to store information where various types of users can purchase and order different products from this application. The project consists of several modules, one of the important ones is the type of users who "will" use this app. In the process of designing the project, it was decided to have 2 types of users: Moderators and Normal Users. Normal users (the person who is using the system) have the ability to choose from various products with the benefit of searching or viewing them by their category, whereas Moderators have much more control over the program.
 
 ### Moderators can:
   * Add products to market
