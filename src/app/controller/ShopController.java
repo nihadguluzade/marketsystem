@@ -53,12 +53,70 @@ public class ShopController {
     private ObservableList<ProductTable> oblist = FXCollections.observableArrayList();
     private ObservableList<BasketTable> basketList = FXCollections.observableArrayList();
     private String[] cats = {"Hepsi", "Oyun", "Müzik", "Kitap", "Film"}; // Categories
+    private Connection connection;
+
+    private void openConnection() {
+        try {
+            connection = DBUtils.getConnection();
+            PreparedStatement statement = connection.prepareStatement("use savt");
+            statement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void checkTableBasket() {
+        String sql = "create table if not exists basket (" +
+                "    username varchar(255) not null," +
+                "    hash bigint," +
+                "    product_id int," +
+                "    img blob," +
+                "    name varchar(255) not null," +
+                "    price float," +
+                "    discount float," +
+                "    seller varchar(255) not null" +
+                ");";
+        try {
+            PreparedStatement statement = connection.prepareStatement("use savt");
+            statement.execute();
+            statement = connection.prepareStatement(sql);
+            statement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("Table `basket` checked.");
+    }
+
+    private void checkTableProducts() {
+        String sql = "create table if not exists products (" +
+                "    id int," +
+                "    img blob," +
+                "    name varchar(255) not null," +
+                "    price float," +
+                "    discount float," +
+                "    seller varchar(255)," +
+                "    category varchar(255)" +
+                ");";
+        try {
+            PreparedStatement statement = connection.prepareStatement("use savt");
+            statement.execute();
+            statement = connection.prepareStatement(sql);
+            statement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("Table `products` checked.");
+    }
 
     public void initShop(final Manager manager, final PeopleTable user) {
 
         Stage stage = (Stage) shopStage.getScene().getWindow();
         stage.sizeToScene();
         stage.setResizable(false);
+
+        openConnection();
+        checkTableBasket();
+        checkTableProducts();
 
         if (user.getType() == 0) {
             stage.setTitle("Alışveriş Sistemi");
@@ -78,20 +136,6 @@ public class ShopController {
         productTypesBox.getItems().addAll(cats);
         productTypesBox.getSelectionModel().selectFirst(); // sets default value of choicebox
         usernameLabel.setText(user.getUsername() + ".");
-
-        /* Runs in background. Updates database every 1 second. HIGH OVERLOAD */
-        /*PauseTransition wait = new PauseTransition(Duration.seconds(1));
-        wait.setOnFinished((e) -> {
-            // If true, then it means product added or removed
-            System.out.println("running");
-            if (countProducts() != oblist.size()) {
-                System.out.println("UPDATED !!!");
-                tilePane.getChildren().removeAll();
-                update();
-            }
-            wait.playFromStart();
-        });
-        wait.play();*/
 
         // 'Filtrele'
         productTypesBox.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
@@ -171,7 +215,7 @@ public class ShopController {
 
 
     /**
-     * Method for filter property. Updates page accoring to selected option.
+     * Method for filter property. Updates page according to selected option.
      * @param index selected option
      */
     private void sortProductsByCategory(int index, PeopleTable user) {
@@ -183,7 +227,8 @@ public class ShopController {
      */
     private int countUserBasket(PeopleTable user) {
         try {
-            Connection connection = DBUtils.getConnection();
+            PreparedStatement statement = connection.prepareStatement("use savt");
+            statement.execute();
             ResultSet rs = connection.createStatement().executeQuery(
                     "SELECT * FROM basket WHERE username = '" + user.getUsername() + "'");
 
@@ -266,15 +311,15 @@ public class ShopController {
      */
     @FXML
     private void deleteProductHandler(ActionEvent e) {
-        System.out.println("e.getSource(): " + e.getSource());
+        //System.out.println("e.getSource(): " + e.getSource());
 
         Button button = (Button) e.getSource();
-
         AnchorPane parent = (AnchorPane) button.getParent();
 
         Label idLabel = (Label) parent.lookup("#productIdLabel");
         String idString = idLabel.getText();
         int id = Integer.parseInt(idString);
+        System.out.println("deleteProductHandler(): id = " + id);
 
         Label tcLabel = (Label) parent.lookup("#tcLabel");
         long tc = Long.parseLong(tcLabel.getText());
@@ -316,24 +361,16 @@ public class ShopController {
      * Removes product from database by its id.
      */
     private void removeProduct(int id) {
+        String sql = "DELETE FROM products WHERE id = ?";
+        PreparedStatement statement = null;
         try {
-            Connection con = DBUtils.getConnection();
-            String sql = "DELETE FROM products WHERE id = ?";
-
-            PreparedStatement preparedStatement = null;
-
-            try {
-                preparedStatement = con.prepareStatement(sql);
-                preparedStatement.setInt(1, id);
-                preparedStatement.executeUpdate();
-                System.out.println("Product deleted.");
-            } catch (Exception e) {
-                Logger.getLogger(Manager.class.getName()).log(Level.FINE, "Error while removing at removeProduct() method", e);
-            }
-
-
-        } catch (SQLException e) {
-            Logger.getLogger(Manager.class.getName()).log(Level.FINE, "Error at removeProduct() method", e);
+            openConnection();
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, id);
+            statement.execute();
+            System.out.println("Product deleted.");
+        } catch (Exception e) {
+            System.out.println("Couldn't delete the product.");
         }
     }
 
@@ -346,15 +383,14 @@ public class ShopController {
      */
     private boolean addToBasket(int id, long tc) {
         try {
-            Connection con = DBUtils.getConnection();
             String sql_product = "SELECT * FROM products WHERE id = " + id;
             String sql_people = "SELECT * FROM people WHERE tc = " + tc;
             String sql_basket =
                     "INSERT INTO basket (username, hash, id, img, name, price, discount, seller) VALUES (?,?,?,?,?,?,?,?)";
             BasketTable basketTable = new BasketTable();
 
-            ResultSet rs_product = con.createStatement().executeQuery(sql_product);
-            ResultSet rs_people = con.createStatement().executeQuery(sql_people);
+            ResultSet rs_product = connection.createStatement().executeQuery(sql_product);
+            ResultSet rs_people = connection.createStatement().executeQuery(sql_people);
 
             Blob blob = null;
             while (rs_product.next() && rs_people.next()) {
@@ -381,7 +417,7 @@ public class ShopController {
             
             PreparedStatement preparedStatement = null;
             try {
-                preparedStatement = con.prepareStatement(sql_basket);
+                preparedStatement = connection.prepareStatement(sql_basket);
 
                 preparedStatement.setString(1, basketTable.getUsername());
                 preparedStatement.setString(2, basketTable.getHash());
@@ -418,26 +454,26 @@ public class ShopController {
      */
     private void update(int remove_flag, final PeopleTable user, String filter, String keyword) {
 
-        // clear the tilepane view
-        getTilePane().getChildren().clear();
-        // clear the products list
-        oblist.clear();
+        getTilePane().getChildren().clear(); // clear the tilepane view
+        oblist.clear(); // clear the products list
 
         try {
-
-            Connection con = DBUtils.getConnection();
+            connection = DBUtils.getConnection();
+            PreparedStatement statement = connection.prepareStatement("use savt");
+            statement.execute();
             ResultSet rs;
+
 
             // send command to sql server according to condition
             if (keyword != null) {
-                rs = con.createStatement()
+                rs = connection.createStatement()
                         .executeQuery("SELECT * FROM products WHERE name LIKE '%" + keyword + "%' " +
                                 "OR seller LIKE '%" + keyword + "%'");
             } else if (filter != null && !filter.equalsIgnoreCase("Hepsi")) {
-                rs = con.createStatement().executeQuery(
+                rs = connection.createStatement().executeQuery(
                         "SELECT * FROM products WHERE category = '" + filter + "'");
             } else {
-                rs = con.createStatement().executeQuery("SELECT * FROM products");
+                rs = connection.createStatement().executeQuery("SELECT * FROM products");
             }
 
 
@@ -659,4 +695,11 @@ public class ShopController {
         this.endRemovingButton = endRemovingButton;
     }
 
+    public Connection getConnection() {
+        return connection;
+    }
+
+    public void setConnection(Connection connection) {
+        this.connection = connection;
+    }
 }

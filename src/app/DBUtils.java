@@ -2,6 +2,7 @@ package app;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
@@ -11,10 +12,24 @@ import java.sql.SQLException;
 
 public class DBUtils {
 
+    private static String url = "jdbc:mysql://localhost";
+    private static String username = "root";
+    private static String password = "";
+
+    public static void createDatabase() {
+        String sql = "create database if not exists savt character set utf8";
+
+        try (Connection con = DriverManager.getConnection(url, username, password)) {
+            PreparedStatement statement = con.prepareStatement(sql);
+            statement.execute();
+            System.out.println("Database checked.");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static Connection getConnection() throws SQLException {
-        return DriverManager
-                .getConnection("jdbc:mysql://localhost/savt?useUnicode=yes&characterEncoding=UTF-8",
-                        "root", ""); // localhost;
+        return DriverManager.getConnection(url, username, password);
     }
 
 }

@@ -8,17 +8,50 @@ import javafx.scene.Scene;
 import javafx.stage.*;
 import javafx.scene.control.*;
 import java.sql.*;
-import java.util.logging.*;
 
 /** Login page, first page, of the app. */
 
 public class LoginController {
 
-    /* @FXML - view'lerdeki nesneleri class'lara aktarmak icin kullanilir */
     @FXML private TextField usernameField;
     @FXML private PasswordField passwordField;
     @FXML private Button submitButton;
     @FXML private Button registerButton;
+    private Connection connection;
+
+    public void initDatabase() {
+        DBUtils.createDatabase();
+    }
+
+    private void openConnection() {
+        try {
+            connection = DBUtils.getConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void checkTablePeople() {
+        String db = "use savt;";
+        String sql = "create table if not exists people (" +
+                "    tc bigint," +
+                "    email varchar(255)," +
+                "    username varchar(255)," +
+                "    first_name varchar(255)," +
+                "    last_name varchar(255)," +
+                "    password varchar(255)," +
+                "    type int" +
+                ");";
+        try {
+            PreparedStatement statement = connection.prepareStatement(db);
+            statement.execute();
+            statement = connection.prepareStatement(sql);
+            statement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("Table `people` checked.");
+    }
 
     public void initManager(final Manager manager) {
 
@@ -32,6 +65,9 @@ public class LoginController {
             stage.setResizable(false);
             stage.setTitle("Alışveriş Sistemi");
         });
+
+        openConnection();
+        checkTablePeople();
 
         submitButton.setOnAction(e -> {
 
@@ -48,11 +84,8 @@ public class LoginController {
             }
 
             PeopleTable user = null;
-            try {
-                user = authorize(usernameField.getText(), passwordField.getText());
-            } catch (SQLException ex) {
-                Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, "Couldn't get access to authorize() method", e);
-            }
+            user = authorize(usernameField.getText(), passwordField.getText());
+
             if (user != null) {
                 manager.showShopMenu(user);
             } else {
@@ -72,17 +105,16 @@ public class LoginController {
      * @return all user information
      * @throws SQLException
      */
-    private PeopleTable authorize(String username, String password) throws SQLException {
+    private PeopleTable authorize(String username, String password) {
 
         // Open connection to database
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         String sql = "SELECT * FROM people WHERE username = ? and password = ?";
-        Connection con = DBUtils.getConnection();
 
         try{
             // changing ? marks with real values in String sql
-            preparedStatement = con.prepareStatement(sql);
+            preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, password);
             resultSet = preparedStatement.executeQuery(); // sends sql code to database
@@ -96,8 +128,8 @@ public class LoginController {
                 loggedUser = new PeopleTable(resultSet.getLong("tc"),
                         resultSet.getString("email"),
                         resultSet.getString("username"),
-                        resultSet.getString("name"),
-                        resultSet.getString("surname"),
+                        resultSet.getString("first_name"),
+                        resultSet.getString("last_name"),
                         resultSet.getString("password"),
                         resultSet.getInt("type"));
                 return loggedUser;

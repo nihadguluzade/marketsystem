@@ -31,6 +31,17 @@ public class AddProductController {
     @FXML private Button backButton;
     private Image image;
     private File file;
+    private Connection connection;
+
+    private void openConnection() {
+        try {
+            connection = DBUtils.getConnection();
+            PreparedStatement statement = connection.prepareStatement("use savt");
+            statement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void initManager(final Manager manager, final String[] cats, final PeopleTable user) {
 
@@ -38,6 +49,8 @@ public class AddProductController {
         stage.sizeToScene();
         stage.setTitle("Ürün Ekleme");
         stage.setResizable(false);
+
+        openConnection();
 
         // used for opening image selection dialog
         FileChooser fileChooser = new FileChooser();
@@ -155,7 +168,7 @@ public class AddProductController {
      */
     private boolean checkProductInStore(String name, String seller, String category) {
         try {
-            Connection connection = DBUtils.getConnection();
+            openConnection();
             String sql = "SELECT * FROM products WHERE name = \"" + name +
                     "\" && seller = \"" + seller + "\" && category = \"" + category + "\"";
             ResultSet resultSet = connection.createStatement().executeQuery(sql);
@@ -185,12 +198,11 @@ public class AddProductController {
                                       String category) throws SQLException {
         PreparedStatement preparedStatement = null;
         String sql = "INSERT INTO products (id, img, name, price, discount, seller, category) VALUES (?,?,?,?,?,?,?)";
-        Connection con = DBUtils.getConnection();
 
         // Convert image to byte array then to blob to store it in database
         byte[] buffer = imageToByteArray(image);
         try {
-            preparedStatement = con.prepareStatement(sql);
+            preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, id);
             preparedStatement.setBlob(2, new SerialBlob(buffer));
             preparedStatement.setString(3, name);
@@ -207,7 +219,6 @@ public class AddProductController {
             alert.setHeaderText(null);
             alert.setContentText("Ürün başarılı şekilde eklendi.");
             alert.show();
-            con.close();
         } catch (Exception e) {
             Logger.getLogger(Manager.class.getName()).log(Level.FINE,
                     "Error in addProductToDatabase(), in AddProductController", e);
@@ -229,8 +240,9 @@ public class AddProductController {
      */
     private int generateID() {
         try {
-            Connection con = DBUtils.getConnection();
-            ResultSet rs = con.createStatement().executeQuery("SELECT id FROM products ORDER BY id DESC LIMIT 1");
+            openConnection();
+            ResultSet rs = connection.createStatement().executeQuery(
+                    "SELECT id FROM products ORDER BY id DESC LIMIT 1");
 
             int id = 0;
 

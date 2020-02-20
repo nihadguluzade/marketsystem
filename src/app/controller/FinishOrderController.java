@@ -35,8 +35,42 @@ public class FinishOrderController {
     @FXML private TextField addressField;
     @FXML private Button submitButton;
     @FXML private Button backButton;
+    private Connection connection;
+
+    private void openConnection() {
+        try {
+            connection = DBUtils.getConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void initialize() {}
+
+    private void checkTableOrders() {
+        String sql = "create table if not exists orders (" +
+                "    username varchar(255) not null," +
+                "    hash varchar(255)," +
+                "    tc bigint," +
+                "    first_name varchar(255)," +
+                "    last_name varchar(255)," +
+                "    email varchar(255)," +
+                "    city varchar(255)," +
+                "    zipcode varchar(255)," +
+                "    buyer varchar(255)," +
+                "    phone bigint," +
+                "    address varchar(255)," +
+                "    price float," +
+                "    products_ids varchar(255)" +
+                ");";
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("Table `orders` checked.");
+    }
 
     public void initOrder(final Manager manager, final PeopleTable user, final int[] productsIdList) {
 
@@ -45,6 +79,8 @@ public class FinishOrderController {
         stage.setTitle("Sipariş Onayı");
         stage.setResizable(false);
 
+        openConnection();
+        checkTableOrders();
 
         DecimalFormat decimalFormat = new DecimalFormat("#####0.00");
         DecimalFormatSymbols symbols = decimalFormat.getDecimalFormatSymbols();
@@ -124,7 +160,6 @@ public class FinishOrderController {
      */
     private boolean checkForProductAvailability(int[] productsIdList) {
         try {
-            Connection connection = DBUtils.getConnection();
             for (int p: productsIdList) {
                 ResultSet rs = connection.createStatement().executeQuery(
                         "SELECT * FROM products WHERE id = " + p);
@@ -147,76 +182,58 @@ public class FinishOrderController {
      * @param order stores all order information in object.
      */
     private boolean sendToDatabase(PeopleTable user, Order order) {
+        String sql = "INSERT INTO orders (username, hash, tc, first_name," +
+                " last_name, email, city, zipcode, buyer, phone, address, price, productsId) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
+        order.setUsername(user.getUsername());
+        order.setHash(generateHash());
+        order.setTc(user.getTc());
+        order.setName(user.getName());
+        order.setSurname(user.getSurname());
+        order.setEmail(user.getEmail());
+
+        PreparedStatement preparedStatement = null;
         try {
-            Connection connection = DBUtils.getConnection();
-            String sql = "INSERT INTO orders (username, hash, tc, name, surname, email, city, zipcode," +
-                    " receiver, phone, address, price, productsId) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, order.getUsername());
+            preparedStatement.setString(2, order.getHash());
+            preparedStatement.setLong(3, order.getTc());
+            preparedStatement.setString(4, order.getName());
+            preparedStatement.setString(5, order.getSurname());
+            preparedStatement.setString(6, order.getEmail());
+            preparedStatement.setString(7, order.getCity());
+            preparedStatement.setString(8, order.getZipcode());
+            preparedStatement.setString(9, order.getReceiver());
+            preparedStatement.setString(10, order.getPhone());
+            preparedStatement.setString(11, order.getAddress());
+            preparedStatement.setDouble(12, order.getPrice());
+            preparedStatement.setString(13, order.getProductsId());
+            preparedStatement.executeUpdate();
+            System.out.println("Order sent.\n");
+            return true;
 
-            order.setUsername(user.getUsername());
-            order.setHash(generateHash());
-            order.setTc(user.getTc());
-            order.setName(user.getName());
-            order.setSurname(user.getSurname());
-            order.setEmail(user.getEmail());
-
-            PreparedStatement preparedStatement = null;
-            try {
-                preparedStatement = connection.prepareStatement(sql);
-                preparedStatement.setString(1, order.getUsername());
-                preparedStatement.setString(2, order.getHash());
-                preparedStatement.setLong(3, order.getTc());
-                preparedStatement.setString(4, order.getName());
-                preparedStatement.setString(5, order.getSurname());
-                preparedStatement.setString(6, order.getEmail());
-                preparedStatement.setString(7, order.getCity());
-                preparedStatement.setString(8, order.getZipcode());
-                preparedStatement.setString(9, order.getReceiver());
-                preparedStatement.setString(10, order.getPhone());
-                preparedStatement.setString(11, order.getAddress());
-                preparedStatement.setDouble(12, order.getPrice());
-                preparedStatement.setString(13, order.getProductsId());
-                preparedStatement.executeUpdate();
-
-                System.out.println("Order sent.\n");
-                return true;
-
-            } catch (Exception e) {
-                Logger.getLogger(Manager.class.getName()).log(Level.FINE,
-                        "Error in statement at sendToDatabase(), in FinishOrderController", e);
-                return false;
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            Logger.getLogger(Manager.class.getName()).log(Level.FINE,
+                    "Error in statement at sendToDatabase(), in FinishOrderController", e);
             return false;
         }
-
     }
 
     /**
      * Clear the user's basket after successful order.
      */
     private void clearUserBasket(PeopleTable user) {
+        String sql = "DELETE FROM basket WHERE username = ?";
+        PreparedStatement preparedStatement = null;
+
         try {
-
-            Connection con = DBUtils.getConnection();
-            String sql = "DELETE FROM basket WHERE username = ?";
-
-            PreparedStatement preparedStatement = null;
-
-            try {
-                preparedStatement = con.prepareStatement(sql);
-                preparedStatement.setString(1, user.getUsername());
-                preparedStatement.executeUpdate();
-                System.out.println("Basket cleared.");
-            } catch (Exception e) {
-                Logger.getLogger(Manager.class.getName()).log(Level.SEVERE,
-                        "Error while clearing at clearUserBasket(), at FinishOrderController", e);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, user.getUsername());
+            preparedStatement.executeUpdate();
+            System.out.println("Basket cleared.");
+        } catch (Exception e) {
+            Logger.getLogger(Manager.class.getName()).log(Level.SEVERE,
+                    "Error while clearing at clearUserBasket(), at FinishOrderController", e);
         }
     }
 
@@ -225,7 +242,6 @@ public class FinishOrderController {
      */
     private double getTotalPrice(PeopleTable user) {
         try {
-            Connection connection = DBUtils.getConnection();
             String sql = "SELECT * FROM basket WHERE username = '" + user.getUsername() + "'";
             ResultSet rs = connection.createStatement().executeQuery(sql);
 

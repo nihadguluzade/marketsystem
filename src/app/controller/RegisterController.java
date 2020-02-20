@@ -8,7 +8,6 @@ import javafx.stage.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import java.sql.*;
-import java.util.logging.*;
 
 public class RegisterController {
 
@@ -23,6 +22,15 @@ public class RegisterController {
     @FXML private Button backButton;
     private boolean blankTc = true;
     private boolean blankUsername = true;
+    private Connection connection;
+
+    private void openConnection() {
+        try {
+            connection = DBUtils.getConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     public boolean isBlankTc() {
         return blankTc;
@@ -48,6 +56,8 @@ public class RegisterController {
         stage.sizeToScene();
         stage.setTitle("Kayıt Başvurusu");
         stage.setResizable(false);
+
+        openConnection();
 
         registerButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -91,19 +101,15 @@ public class RegisterController {
                     usernameField.setStyle("");
                 }
 
-                try {
-                    if (addToDatabase(Long.parseLong(tcField.getText()), emailField.getText(), usernameField.getText(),
-                            nameField.getText(), surnameField.getText(), passwordField.getText())) {
-                        manager.showAlert(Alert.AlertType.INFORMATION, owner, "",
-                                "Kayıt Başarılı.");
-                    } else {
-                        manager.showAlert(Alert.AlertType.ERROR, owner, "Kayıt BAŞARISIZ",
-                                "Hata Oluşdu. Lütfen daha sonra deneyiniz.");
-                    }
-                } catch (SQLException e) {
-                    Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, "Couldn't get access to addToDatabase() method", e);
-                }
 
+                if (addToDatabase(Long.parseLong(tcField.getText()), emailField.getText(), usernameField.getText(),
+                        nameField.getText(), surnameField.getText(), passwordField.getText())) {
+                    manager.showAlert(Alert.AlertType.INFORMATION, owner, "",
+                            "Kayıt Başarılı.");
+                } else {
+                    manager.showAlert(Alert.AlertType.ERROR, owner, "Kayıt BAŞARISIZ",
+                            "Hata Oluşdu. Lütfen daha sonra deneyiniz.");
+                }
 
                 manager.showLoginPage();
 
@@ -116,10 +122,7 @@ public class RegisterController {
 
     // Controls if there are same tc and/or username
     private void controlCheck(long tc, String username) {
-
         try {
-
-            Connection connection = DBUtils.getConnection();
             String sql = "SELECT * FROM people WHERE tc = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setLong(1, tc);
@@ -151,27 +154,25 @@ public class RegisterController {
      * @param tc user's unique TC number
      * @param username user's unique username
      */
-    private boolean addToDatabase(long tc, String email, String username, String name, String surname, String password)
-            throws SQLException {
-
+    private boolean addToDatabase(long tc, String email, String username, String first_name,
+                                  String last_name, String password) {
         PreparedStatement preparedStatement = null;
-        String sql = "INSERT INTO people (tc, email, username, name, surname, password, type) VALUES (?,?,?,?,?,?,?)";
-        Connection con = DBUtils.getConnection();
+        String sql = "INSERT INTO people (tc, email, username, first_name, last_name, password, type) VALUES (?,?,?,?,?,?,?)";
 
         try {
-            preparedStatement = con.prepareStatement(sql);
+            preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setLong(1, tc);
             preparedStatement.setString(2, email);
             preparedStatement.setString(3, username);
-            preparedStatement.setString(4, name);
-            preparedStatement.setString(5, surname);
+            preparedStatement.setString(4, first_name);
+            preparedStatement.setString(5, last_name);
             preparedStatement.setString(6, password);
             preparedStatement.setInt(7, 0);
             preparedStatement.executeUpdate();
             System.out.println("New user inserted successfully.");
             return true;
         } catch (Exception e) {
-            Logger.getLogger(Manager.class.getName()).log(Level.FINE, "Something wrong happened in addToDatabase() method", e);
+            System.out.println("Error while inserting new user.");
             return false;
         }
     }

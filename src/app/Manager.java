@@ -48,6 +48,7 @@ public class Manager extends Main {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("view/login.fxml"));
             scene.setRoot((Parent) loader.load());
             LoginController controller = loader.<LoginController>getController();
+            controller.initDatabase();
             controller.initManager(this);
         } catch (IOException e) {
             Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, null, e);
