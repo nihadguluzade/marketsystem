@@ -8,7 +8,9 @@ The project consists of several modules. In the process of designing the project
 Database tables will be created once the program runs. Database name is **savt** and tables are **users**, **products**, **baskets**, **orders**.
 
 ### Compile
-To manually compile the program make sure to have JavaFX library installed on your system. It must be installed on default.
+To manually compile the program make sure to have JavaFX library installed on your system. It must be installed on default. 
+
+Make sure to check the database username and password on <code>DBUtils.java</code> to create connection.
 
 Content of the program is constructed in Turkish language.
 
